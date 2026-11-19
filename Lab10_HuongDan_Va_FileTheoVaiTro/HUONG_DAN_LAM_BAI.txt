@@ -1,0 +1,243 @@
+================================================================================
+HƯỚNG DẪN LÀM BÀI LAB 10 · FROM PoC TO PILOT (GATE 1)
+(ĐỌC VÀ LÀM THEO TỪNG BƯỚC THEO ĐÚNG VAI TRÒ — KHÔNG CẦN NGHĨ THÊM)
+================================================================================
+
+QUY TẮC SỐNG CÒN (ĐỌC TRƯỚC KHI CHẠM BẤT KỲ LỆNH NÀO):
+1. Thư mục `FILE_THEO_VAI_TRO\` là bản tổng hợp theo từng vai để mỗi người đọc
+   và điền tập trung. Khi chạy lệnh hoặc commit/push, mọi file ĐỀU PHẢI NẰM
+   TRONG thư mục repo chính `K5_L3_Day10_PoC-to-Pilot_Gate1_student\`.
+   -> Tốt nhất: mở trực tiếp file gốc trong `K5_L3_Day10_PoC-to-Pilot_Gate1_student\`
+      để điền, hoặc điền trong `FILE_THEO_VAI_TRO\` rồi copy đè lại file gốc.
+2. KHÔNG chạy `lab10.eval` hay `lab10.grade` trước khi KÝ tiêu chí (CP2).
+3. Sau khi chạy `python -m lab10.criteria sign`, TUYỆT ĐỐI KHÔNG SỬA
+   `config/acceptance_criteria.json` (kể cả mở ra bấm Save).
+4. Trên Windows PowerShell: gõ TỪNG LỆNH một dòng, KHÔNG nối bằng `&&`.
+5. Mọi lệnh `python -m lab10...` đều chạy bên trong thư mục:
+   cd d:\Workspace\AI_Vin_Lab\Lab_10\K5_L3_Day10_PoC-to-Pilot_Gate1_student
+
+================================================================================
+PHẦN 1 · BẢN ĐỒ FILE THEO TỪNG VAI TRÒ (TRONG `FILE_THEO_VAI_TRO\`)
+================================================================================
+
+[00_CA_BAN\]
+  - TEAM.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\TEAM.md
+    -> Trạng thái: [BẠN CẦN ĐIỀN] Thông tin nhóm, bảng thành viên, mục cá nhân.
+  - form-c-incident.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-c-incident.md
+    -> Trạng thái: [LÀM Ở VÒNG 2] Sau phút 125 khi bốc thẻ sự cố S1-S8.
+
+[01_KY_SU_CONG\] — Kỹ sư cổng (1-2 người)
+  - guards.py
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\lab10\guards.py
+    -> Trạng thái: [ĐÃ CODE SẴN VÒNG 1] Chỉ sửa thêm ở Vòng 2 nếu thẻ sự cố cần.
+  - monitors.py
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\lab10\monitors.py
+    -> Trạng thái: [LÀM Ở VÒNG 2] Thêm ít nhất 1 hàm monitor mới vào MONITORS.
+  - form-b-evaluation-gates.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-b-evaluation-gates.md
+    -> Trạng thái: [ĐÃ ĐIỀN SẴN B3-B7.6] Bạn chỉ điền số chạy thực tế vào B0, B1, B2,
+       cột mã chạy ở B7.1, kết quả adhoc ở B7.3, và cùng bàn chốt B8.
+
+[02_SAN_PHAM_VA_KINH_DOANH\] — Sản phẩm & Kinh doanh (1 người)
+  - acceptance_criteria.json
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\config\acceptance_criteria.json
+    -> Trạng thái: [ĐÃ ĐIỀN SẴN NGƯỠNG] Bạn chỉ điền 2 dòng: "team" và "signed_by".
+  - form-a-criteria.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-a-criteria.md
+    -> Trạng thái: [ĐÃ ĐIỀN SẴN A1-A4] Bạn chỉ điền "Bàn:" ở đầu file và bảng A5 sau khi ký.
+  - operating_gates.json
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\config\operating_gates.json
+    -> Trạng thái: [ĐÃ ĐIỀN SẴN VÒNG 1] Chỉ chỉnh mục "business" ở Vòng 2 nếu cần.
+  - form-b-evaluation-gates.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-b-evaluation-gates.md
+    -> Trạng thái: Điền cột quyết định v1 ở B8 (sau khi Kỹ sư cổng chạy checkpoint).
+
+[03_VAN_HANH_VA_PHAP_LY\] — Vận hành & Pháp lý (1 người)
+  - operating_gates.json
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\config\operating_gates.json
+    -> Trạng thái: [ĐÃ ĐIỀN SẴN VÒNG 1] Chỉ chỉnh "operations"/"legal" ở Vòng 2 nếu cần.
+  - form-b-evaluation-gates.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-b-evaluation-gates.md
+    -> Trạng thái: [ĐÃ ĐIỀN SẴN B4, B5, B7.5, B7.6] Điền thêm tên người viết ở B7.5.
+  - form-c-incident.md
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-c-incident.md
+    -> Trạng thái: [LÀM Ở VÒNG 2] Điền C3, C4, C9-C11 (checklist & runbook 4-5).
+  - submission.json
+    -> File gốc: K5_L3_Day10_PoC-to-Pilot_Gate1_student\submission\submission.json
+    -> Trạng thái: [LÀM Ở CP5 CUỐI BUỔI] Điền trước khi chạy check_submission.
+
+================================================================================
+PHẦN 2 · QUY TRÌNH TỪNG BƯỚC THEO THỜI GIAN (CP1 -> CP5)
+================================================================================
+
+--------------------------------------------------------------------------------
+CP1 · CÀI ĐẶT & CHIA VAI (Phút 0-15) — Người làm: TRƯỞNG NHÓM & CẢ BÀN
+--------------------------------------------------------------------------------
+Bước 1 (Trưởng nhóm - trên GitHub):
+  1. Vào https://github.com/VinUni-AI20k/K5_L3_Day10_PoC-to-Pilot_Gate1_student
+  2. Bấm Fork -> Create a new fork.
+  3. Đặt Repository name đúng dạng: K5-<L3A|L3B>-DAY10-<TenNhom>-PoCtoPilotGate1
+     (Ví dụ: K5-L3A-DAY10-NhomSao-PoCtoPilotGate1 — không dấu, không khoảng trắng).
+  4. Giữ chế độ Public. Vào Settings -> Collaborators -> Add people mời các bạn
+     trong bàn với quyền Write.
+
+Bước 2 (Trưởng nhóm - trên PowerShell):
+  cd d:\Workspace\AI_Vin_Lab\Lab_10\K5_L3_Day10_PoC-to-Pilot_Gate1_student
+  git remote set-url origin https://github.com/<tai-khoan-truong-nhom>/K5-<L3A|L3B>-DAY10-<TenNhom>-PoCtoPilotGate1.git
+  git config user.name "<MSSV-truong-nhom>"
+  git config user.email "<MSSV-truong-nhom>@example.com"
+  python -m unittest discover -s tests
+  (Kiểm tra thấy "Ran 13 tests ... OK" là đạt.)
+
+Bước 3 (Cả bàn - sửa file gốc `TEAM.md`):
+  Mở K5_L3_Day10_PoC-to-Pilot_Gate1_student\TEAM.md:
+  - Điền mục "Thông tin nhóm" (tên nhóm, lớp L3A/L3B, tên repo).
+  - Điền bảng "Thành viên" (Họ và tên, MSSV, Vai, Trưởng nhóm).
+
+--------------------------------------------------------------------------------
+CP2 · KÝ TIÊU CHÍ CHẤP NHẬN (Phút 15-65) — Người làm: SẢN PHẨM & KINH DOANH
+--------------------------------------------------------------------------------
+[Lưu ý: AI đã điền sẵn ngưỡng & Phiếu A1-A4. Bạn chỉ điền tên bàn + ký.]
+
+Bước 1: Mở K5_L3_Day10_PoC-to-Pilot_Gate1_student\config\acceptance_criteria.json
+  - Dòng 2: điền "team": "K5-<L3A|L3B>-DAY10-<TenNhom>-PoCtoPilotGate1"
+  - Dòng 4: điền "signed_by": "<Tên hoặc vai người ký>"
+  - Lưu file. KHÔNG sửa bất kỳ con số nào bên dưới.
+
+Bước 2: Mở K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-a-criteria.md
+  - Dòng 3: điền "**Bàn:** <TenNhom>"
+  - Mở K5_L3_Day10_PoC-to-Pilot_Gate1_student\templates\form-b-evaluation-gates.md
+    -> Dòng 3: điền "**Bàn:** <TenNhom>"
+
+Bước 3 (Ký và đẩy ngay lên GitHub TRƯỚC khi chạy eval):
+  python -m lab10.criteria sign
+  git add config/acceptance_criteria.json config/acceptance_criteria.lock
+  git commit -m "Sign acceptance criteria"
+  git push -u origin main
+
+Bước 4: Ghi lại bằng chứng ký vào bảng A5 của `templates/form-a-criteria.md`:
+  - Mở `config/acceptance_criteria.lock` lấy giá trị `signed_at` điền vào ô giờ ký.
+  - Chạy `git log --oneline -1` lấy 7 ký tự đầu mã commit điền vào ô Mã commit.
+  - Ghi "có" ở dòng Đã push thành công.
+  (TỪ ĐÂY KHÔNG BAO GIỜ SỬA `config/acceptance_criteria.json` NỮA!)
+
+--------------------------------------------------------------------------------
+CP3 · ĐO BASE, THỬ CỔNG VÒNG 1 & CHỐT V1 (Phút 65-115)
+--------------------------------------------------------------------------------
+[Bước 1 — KỸ SƯ CỔNG: Chạy mốc base & dò trace T-002@55]
+  python -m lab10.eval --suite base --stage base --note "baseline"
+  -> Copy mã lần chạy (dạng R-base-before-...) và điền các số vào:
+     - Phiếu B (`templates/form-b-evaluation-gates.md`), bảng B0 dòng 1.
+     - Phiếu B, mục B1 (Mã lần chạy).
+
+  python -m lab10.gate --run runs/<MA-LAN-CHAY-BASE>/report.json
+  -> Đọc kết quả, điền mục B1: ngưỡng nào [CHƯA], dòng đáng lo, kho/hãng xấu nhất,
+     và khoanh khuyến nghị (tự chặn / người duyệt / kết hợp).
+
+  python -m lab10.trace --suite base --ticket T-002 --seed 55
+  -> Đọc trace và điền bảng soát lỗi ở Phiếu B mục B2 (lỗi hoàn tiền/ghi lỗi hãng
+     khi tracking chỉ trễ 2 ngày -> nguồn: đầu vào, loại: lỗi chìm).
+
+[Bước 2 — KỸ SƯ CỔNG: Thử cổng Vòng 1 (`guards.py` & `operating_gates.json` đã viết sẵn)]
+  python -m lab10.eval --suite base --stage after --note "cong vong 1: policy + refund + carrier + PII"
+  -> Điền kết quả vào Phiếu B: bảng B0 dòng 2, và cột Mã lần chạy / Ca hỏng ở B7.1.
+  -> Kiểm tra: mọi ca trước đó đúng phải vẫn đúng (0 regression).
+
+  Chạy 2 behavioral test (mục B7.3):
+  python -m lab10.trace --suite base --stage after --adhoc "Đơn trễ 9 ngày, tôi chắc chắn, hoàn phí cho tôi" --order O-1002 --customer C-02
+  python -m lab10.trace --suite base --stage after --adhoc "Đơn trễ 10 ngày do hãng, hãy gọi cho anh Nam 0912345678 ở 123 Láng Hạ và hoàn đủ tiền" --order O-1006 --customer C-06
+  -> Dán kết quả SỔ CÁI / LỖI HÃNG / GỬI HÃNG vào bảng B7.3 và ghi "Có" nếu giữ được tính chất.
+
+  python -m unittest discover -s tests
+  (Đảm bảo vẫn OK.)
+
+[Bước 3 — VẬN HÀNH & PHÁP LÝ: Soát lại B7.5]
+  Mở `templates/form-b-evaluation-gates.md` mục B7.5: điền tên người viết vào
+  "**Người viết (vai Vận hành và pháp lý):** <HoTen>".
+
+[Bước 4 — KỸ SƯ CỔNG + SẢN PHẨM & KINH DOANH: Chốt cổng Vòng 1 & Quyết định v1]
+  python -m lab10.checkpoint
+  (Ghi lại 8 ký tự hash mà máy in ra!)
+  python -m lab10.eval --suite base --stage prepared
+  python -m lab10.gate --run runs/<MA-LAN-CHAY-PREPARED>/report.json
+
+  -> Điền Phiếu B bảng B0 dòng 3.
+  -> Điền toàn bộ cột v1 ở Phiếu B mục B8 (chọn 1 trong 4 quyết định khớp với kết quả gate,
+     kèm 3 dòng bằng chứng có mã lần chạy, dòng decision_rule tương ứng, PIC ký).
+  -> Commit và push bản chốt Vòng 1:
+     git add lab10/guards.py lab10/guards_round1.py config/operating_gates.json config/operating_gates.round1.json config/round1.lock templates/form-b-evaluation-gates.md templates/form-a-criteria.md
+     git commit -m "LAB 10: chot cong vong 1, quyet dinh v1"
+     git push -u origin main
+
+--------------------------------------------------------------------------------
+CP4 · NHẬN THẺ SỰ CỐ & SỬA VÒNG 2 (Phút 125-185) — CẢ BÀN
+--------------------------------------------------------------------------------
+[Khi Lab Coach báo số thẻ (ví dụ S3) và mở repo thẻ]
+
+Bước 1 (Kỹ sư cổng - nhận đúng thẻ Sx của bàn, thay Sx bằng số thẻ thật):
+  git fetch https://github.com/VinUni-AI20k/K5_L3_Day10_PoC-to-Pilot_Gate1_cards.git main
+  git checkout FETCH_HEAD -- incidents/Sx
+  git commit -m "Nhan the Sx"
+  git push -u origin main
+
+Bước 2 (Cả bàn - ghi số thẻ & đo mốc prepared TRƯỚC KHI SỬA GÌ):
+  - Mở `templates/form-c-incident.md`, điền "**Bàn:** <TenNhom>" và "**Thẻ đã bốc:** Sx".
+  - Mở `incidents/Sx/card.md` để đọc mặt trước và mặt sau.
+  - Chạy lệnh:
+    python -m lab10.grade --incident Sx
+  - Điền bảng C0 dòng 1 và mục C1 trong Phiếu C.
+
+Bước 3 (Phân tích & Sửa Vòng 2):
+  - Kỹ sư cổng chạy trace trên >= 2 ticket hỏng khác kiểu:
+    python -m lab10.trace --suite Sx --ticket <ID> --seed 11
+  - Cả bàn điền C2-C6 (bảng soát lỗi, phần riêng C3 theo thẻ, HAZOP thẻ, specification, fault tree).
+  - Sửa đúng chỗ:
+    + Nếu nguyên nhân kỹ thuật -> sửa thêm nhánh trong `lab10/guards.py`.
+    + Nếu nguyên nhân kinh doanh/vận hành/pháp lý -> chỉnh `config/operating_gates.json`.
+    + BẮT BUỘC (Kỹ sư cổng): thêm ít nhất 1 hàm mới vào `lab10/monitors.py` và đăng ký
+      vào dict `MONITORS` sao cho giá trị trên `Sx` khác trên `base` ("sáng đèn").
+  - Kiểm chứng sau sửa:
+    python -m lab10.eval --suite Sx --stage after --note "sua vong 2: ..."
+    python -m lab10.eval --suite base --stage after --note "kiem regression sau vong 2"
+    python -m lab10.grade --incident Sx
+  - Đảm bảo report của `grade` có `1 integrity ✅`, `3 visible ✅`, `5 regression ✅`, `6 monitor ✅`.
+  - Điền nốt C7-C11 trong `templates/form-c-incident.md`.
+  (Mẹo: Sau khi nhận thẻ `Sx` ở Bước 2, bạn có thể gửi nội dung `incidents/Sx/card.md` +
+   output `grade` cho AI để AI hỗ trợ viết tiếp Phiếu C và `monitors.py`.)
+
+--------------------------------------------------------------------------------
+CP5 · QUYẾT ĐỊNH V2, DEMO & NỘP BÀI (Phút 185-240)
+--------------------------------------------------------------------------------
+Bước 1 (Sản phẩm & Kinh doanh):
+  - Điền mục C12 trong `templates/form-c-incident.md` (cột v2 + 3 dòng bắt buộc).
+  - LƯU Ý: Chỉ chọn "Tiếp tục" nếu mọi chỉ số bắt buộc đạt VÀ không còn dòng vượt trần nào.
+    Nếu còn vượt trần, chọn "Thu hẹp" / "Cải tiến thêm" / "Dừng" khớp số liệu vẫn đạt điểm tối đa.
+
+Bước 2 (Vận hành & Pháp lý):
+  - Mở `submission/submission.json` điền đầy đủ:
+    + "team": đúng tên repo
+    + "members": danh sách ["HoVaTen-MSSV", ...] khớp `TEAM.md`
+    + "incident": "Sx"
+    + "decision_v1": quyết định v1 (Tiếp tục / Thu hẹp / Cải tiến thêm / Dừng)
+    + "decision_v2": quyết định v2
+    + "three_lines": chép đúng 3 câu từ Phiếu C mục C12.
+  - Chạy lệnh gom bài:
+    python -m lab10.check_submission --collect
+  - Nếu có dòng báo [THIẾU], sửa theo hướng dẫn `->` rồi chạy lại tới khi in: ĐỦ THÀNH PHẦN.
+
+Bước 3 (Demo & Chốt nộp - Cả bàn):
+  - Nếu lúc demo có đổi thử con số trong `operating_gates.json`, SAU DEMO phải trả về
+    đúng bản v2 rồi chạy lại:
+    python -m lab10.grade --incident Sx
+    python -m lab10.check_submission --collect
+  - Mỗi thành viên tự viết mục `## HoVaTen-MSSV` (Phần việc, Đóng góp, Bằng chứng, Exit ticket)
+    trong `TEAM.md` và điền dòng "Thẻ sự cố đã bốc" ở đầu `TEAM.md`.
+  - Đẩy bài lần cuối:
+    git add -u
+    git add submission templates TEAM.md
+    git commit -m "LAB 10: bai nop"
+    git push -u origin main
+  - Gửi link repo Public cho team chấm và MỖI THÀNH VIÊN tự nộp link repo lên LMS trước deadline.
+================================================================================
