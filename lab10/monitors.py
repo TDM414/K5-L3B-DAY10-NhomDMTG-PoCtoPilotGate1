@@ -19,7 +19,21 @@ def escalation_rate(trials):
     return sum(t["status"] == "escalated" for t in trials) / max(1, len(trials))
 
 
+def max_warehouse_cost_per_ticket(trials):
+    review_cost = 10000
+    costs = {}
+    counts = {}
+    for trial in trials:
+        warehouse = trial.get("warehouse") or "?"
+        costs[warehouse] = costs.get(warehouse, 0) + (trial.get("cost_vnd") or 0)
+        if trial.get("review_kind") == "escalated":
+            costs[warehouse] += review_cost
+        counts[warehouse] = counts.get(warehouse, 0) + 1
+    return max((costs[warehouse] / counts[warehouse] for warehouse in costs), default=0)
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
+    "max_warehouse_cost_per_ticket": max_warehouse_cost_per_ticket,
 }
 STARTER_MONITORS = ("escalation_rate",)

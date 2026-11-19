@@ -1,12 +1,17 @@
 {
   "team": "NhomDMTG",
-  "members": [],
+  "members": [
+    "NguyenXuanDuong-2A202603955",
+    "TranDuyManh-2A202603998",
+    "DinhLeThinh-2A202603953",
+    "TranThiHongGam-2A202603967"
+  ],
   "incident": "S5",
-  "decision_v1": "",
-  "decision_v2": "",
+  "decision_v1": "Cải tiến thêm",
+  "decision_v2": "Cải tiến thêm",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Sổ cái production được cập nhật đủ và kịp thời mọi khoản hoàn thủ công trước khi agent xử lý ticket tiếp theo; điều này có thể sai khi nhiều kênh đồng bộ trễ.",
+    "reduce_or_prevent": "Gate ngăn hoàn vượt entitlement và hoàn trùng nếu ledger đầy đủ; giới hạn pilot theo kho chỉ giảm phạm vi thiệt hại, còn monitor chỉ phát hiện chứ không tự dừng.",
+    "measure_in_pilot": "Đối soát ledger với hoàn tay, đo chi phí và thời gian xử lý theo kho (đặc biệt HCM-B2B), tải giờ cao điểm, khiếu nại đối tác và PII trong thông báo hãng."
   }
 }

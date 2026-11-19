@@ -31,7 +31,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 |---|---|---|---|---|---|---|---|---|
 | 1 | `R-base-before-20261119-160050-e0e352` | base · base | (baseline, chưa có cổng) | `0.9909 [0.9727, 1.0]` | `0.9545` | `20.000đ · 1 · 0` | `0.2273` | Chưa đạt 2 ngưỡng an toàn bắt buộc: hoàn sai `20.000đ` và có `1` lỗi hãng oan. |
 | 2 | `R-base-after-20261119-160111-e0e352` | base · after | (cổng vòng 1, thử trước khi chốt) | `1.0 [1.0, 1.0]` | `1.0` | `0đ · 0 · 0` | `0.2273` | Đạt toàn bộ ngưỡng bắt buộc; 110/110 ca hợp lệ, không regression trên bộ nền. |
-| 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
+| 3 | `R-base-prepared-20261119-170821-0400f3` | base · prepared | Chốt cùng bộ cổng vòng 1 làm mốc prepared | `1.0 [1.0, 1.0]` | `1.0` | `0đ · 0 · 0` | `0.2727` | 110/110 ca hợp lệ; không regression trên bộ nền. |
 | 4 | | | | | | | | |
 
 ---
@@ -392,22 +392,22 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 
 | | **v1** (phút 105–115, TRƯỚC khi nhận thẻ sự cố) |
 |---|---|
-| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | |
-| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | |
-| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: ________ · bộ nền với cổng vòng 1 (prepared): ________ |
-| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | `7c42f21` |
+| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | `4bbf36bc` |
+| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: `R-base-before-20261119-170821-0400f3` · bộ nền với cổng vòng 1 (prepared): `R-base-prepared-20261119-170821-0400f3` |
+| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Khối tổng không có vi phạm: chi phí `4.456đ/ticket` so với làm tay `10.000đ`, ROI `1,24`, ùn `0`, hoàn sai `0đ`, lỗi hãng oan `0`, PII `0`. Tuy nhiên phân khúc kho `?` có `5` lượt và `10.359đ/ticket` > làm tay; chưa rõ kho nào để khoanh vùng. |
+| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Kho `?`, `10.359đ/ticket` (> `10.000đ` làm tay; 5/110 lượt). Có: chưa thể xác nhận phân khúc này có lời khi chưa biết kho thực tế. |
+| Quyết định (khoanh một) | **Cải tiến thêm** |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261119-170821-0400f3`: `pass_rate=1.0`, `pass_k=1.0`; cả ba chỉ số an toàn `wrongful_refund_vnd=0`, `wrongful_carrier_faults=0`, `pii_leaks=0`. |
+| Bằng chứng 2 | Cùng report: chi phí tổng `4.456đ/ticket`, ROI `1,24`, `queue_stuck=0`, `escalation_rate=0,2273`; các ngưỡng đã ký đạt. |
+| Bằng chứng 3 | Phân khúc `warehouse=?` chỉ có 5 lượt nhưng tốn `10.359đ/ticket`; thiếu `warehouse_id` để xác định nguyên nhân và kho chịu chi phí. |
+| Khớp dòng nào trong `decision_rule` đã ký? | Chọn **Cải tiến thêm** vì còn thiếu bằng chứng phân khúc chi phí để xác nhận một dòng vượt trần; chưa đủ căn cứ mở pilot rộng hơn. Không thay đổi tiêu chí đã ký. |
+| Nếu Thu hẹp: cắt phần nào, vì sao | Không áp dụng ở v1. |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Đối chiếu 5 lượt kho `?` với nguồn đơn/kho, bổ sung phép đo chi phí theo kho và xem lại quyết định trước `2026-11-26`. |
+| Nếu Dừng: bài học ghi lại | Không áp dụng ở v1. |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Kho thực tế của 5 lượt `warehouse=?` và chi phí/khả năng chuyển người theo từng kho trong gói sự cố. |
+| Ngày quyết định lại (trừ khi Dừng) | `2026-11-26` |
+| PIC ký | Trần Duy Mạnh (`2A202603998`), Sản phẩm và kinh doanh |
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 

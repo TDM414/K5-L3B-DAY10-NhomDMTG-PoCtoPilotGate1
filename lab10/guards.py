@@ -44,12 +44,14 @@ def pre_guard(ctx):
 def _guard_issue_refund(ctx, action, pol, order, parcel, delay):
     """Cổng 2: Chặn hoàn đúp, khóa quyền lợi theo tracking DB, và kiểm trần/hạn mức."""
     order_id = action.get("order_id")
-    if ctx.tools.ledger_rows(order_id=order_id):
-        return Verdict.deny("đơn hàng đã có dòng hoàn tiền trong sổ cái")
-
     entitlement = H.entitlement_vnd(pol, order, delay, parcel.get("delay_cause"))
     if entitlement <= 0:
         return Verdict.deny("không đủ điều kiện hoàn tiền theo tracking DB và chính sách hiệu lực")
+
+    refunded = sum(r.get("amount_vnd", 0) for r in ctx.tools.ledger_rows(order_id=order_id))
+    if refunded >= entitlement:
+        return Verdict.deny("đơn hàng đã được hoàn đủ quyền lợi theo chính sách")
+    refund_due = entitlement - refunded
 
     limits = ctx.tools.ops_limits()
     cust_cap = limits.get("max_auto_refund_per_customer_per_day_vnd")
@@ -65,15 +67,15 @@ def _guard_issue_refund(ctx, action, pol, order, parcel, delay):
         approval_id and ctx.tools.lookup_approvals(approval_id=approval_id, order_id=order_id)
     )
     if not has_valid_approval:
-        if entitlement > pol.get("auto_limit_vnd", 0):
+        if refund_due > pol.get("auto_limit_vnd", 0):
             return Verdict.escalate("khoản hoàn vượt auto_limit_vnd và chưa có phê duyệt hợp lệ")
-        if cust_cap is not None and cust_spent + entitlement > cust_cap:
+        if cust_cap is not None and cust_spent + refund_due > cust_cap:
             return Verdict.escalate("tổng hoàn tự động trong ngày vượt trần khách hàng")
 
-    if action.get("amount_vnd") != entitlement or action.get("payer") != "LOGIX":
+    if action.get("amount_vnd") != refund_due or action.get("payer") != "LOGIX":
         return Verdict.modify(
-            "điều chỉnh số tiền hoàn và người trả đúng quyền lợi từ tracking DB",
-            amount_vnd=entitlement,
+            "điều chỉnh số tiền hoàn còn thiếu và người trả đúng quyền lợi từ tracking DB",
+            amount_vnd=refund_due,
             payer="LOGIX",
         )
     return Verdict.allow()
