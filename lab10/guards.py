@@ -34,9 +34,107 @@ from .tools import Verdict
 
 
 def pre_guard(ctx):
+    """Cổng 1: Ghim phiên bản chính sách đang có hiệu lực theo ctx.as_of."""
+    pol = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+    if pol:
+        return Verdict.allow(policy_id=pol["policy_id"])
     return Verdict.allow()
 
 
+def _guard_issue_refund(ctx, action, pol, order, parcel, delay):
+    """Cổng 2: Chặn hoàn đúp, khóa quyền lợi theo tracking DB, và kiểm trần/hạn mức."""
+    order_id = action.get("order_id")
+    if ctx.tools.ledger_rows(order_id=order_id):
+        return Verdict.deny("đơn hàng đã có dòng hoàn tiền trong sổ cái")
+
+    entitlement = H.entitlement_vnd(pol, order, delay, parcel.get("delay_cause"))
+    if entitlement <= 0:
+        return Verdict.deny("không đủ điều kiện hoàn tiền theo tracking DB và chính sách hiệu lực")
+
+    limits = ctx.tools.ops_limits()
+    cust_cap = limits.get("max_auto_refund_per_customer_per_day_vnd")
+    cust_id = order.get("customer_id")
+    cust_spent = sum(
+        r.get("amount_vnd", 0)
+        for r in ctx.tools.ledger_rows(customer_id=cust_id)
+        if not r.get("approval_id")
+    )
+
+    approval_id = action.get("approval_id")
+    has_valid_approval = bool(
+        approval_id and ctx.tools.lookup_approvals(approval_id=approval_id, order_id=order_id)
+    )
+    if not has_valid_approval:
+        if entitlement > pol.get("auto_limit_vnd", 0):
+            return Verdict.escalate("khoản hoàn vượt auto_limit_vnd và chưa có phê duyệt hợp lệ")
+        if cust_cap is not None and cust_spent + entitlement > cust_cap:
+            return Verdict.escalate("tổng hoàn tự động trong ngày vượt trần khách hàng")
+
+    if action.get("amount_vnd") != entitlement or action.get("payer") != "LOGIX":
+        return Verdict.modify(
+            "điều chỉnh số tiền hoàn và người trả đúng quyền lợi từ tracking DB",
+            amount_vnd=entitlement,
+            payer="LOGIX",
+        )
+    return Verdict.allow()
+
+
+def _guard_file_carrier_fault(ctx, action, pol, order, parcel, delay):
+    """Cổng 3a: Chỉ ghi lỗi hãng khi đủ điều kiện theo DB, đúng kiện trễ và không vượt trần strike."""
+    if not H.carrier_at_fault(pol, parcel, delay):
+        return Verdict.deny("không đủ căn cứ lỗi hãng theo tracking DB và chính sách hiệu lực")
+
+    parcel_id = parcel.get("parcel_id")
+    if ctx.tools.fault_rows(order_id=order.get("order_id"), parcel_id=parcel_id):
+        return Verdict.deny("kiện hàng này đã được ghi lỗi hãng trước đó")
+
+    carrier_id = parcel.get("carrier_id")
+    max_strikes = ctx.tools.ops_limits().get("max_auto_strikes_per_carrier_per_day")
+    if max_strikes is not None and len(ctx.tools.fault_rows(carrier_id=carrier_id)) >= max_strikes:
+        return Verdict.escalate("vượt số lỗi hãng tự động tối đa trong ngày")
+
+    if (
+        action.get("parcel_id") != parcel_id
+        or action.get("carrier_id") != carrier_id
+        or action.get("delay_days") != delay
+    ):
+        return Verdict.modify(
+            "khóa đúng kiện hàng trễ, hãng vận chuyển và số ngày trễ từ tracking DB",
+            parcel_id=parcel_id,
+            carrier_id=carrier_id,
+            delay_days=delay,
+        )
+    return Verdict.allow()
+
+
+def _guard_notify_carrier(pol, action):
+    """Cổng 3b: Whitelist payload gửi hãng theo carrier_notice_fields để chặn rò rỉ PII."""
+    allowed_fields = set(pol.get("carrier_notice_fields", []))
+    payload = action.get("payload") or {}
+    if not allowed_fields or set(payload.keys()).issubset(allowed_fields):
+        return Verdict.allow()
+    clean_payload = {k: v for k, v in payload.items() if k in allowed_fields}
+    return Verdict.modify("loại bỏ trường ngoài carrier_notice_fields để chống rò rỉ PII", payload=clean_payload)
+
+
 def write_gate(ctx, action):
-    # action = {"tool": "issue_refund", "ticket_id":..., "order_id":..., "amount_vnd":..., "payer":..., ...}
+    """Cổng phòng ngừa trước mỗi lệnh ghi."""
+    tool = action.get("tool")
+    pol = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+    if not pol:
+        return Verdict.escalate("không tìm thấy chính sách hiệu lực theo as_of")
+
+    if tool == "notify_carrier":
+        return _guard_notify_carrier(pol, action)
+
+    if tool in ("issue_refund", "file_carrier_fault"):
+        order = ctx.tools.lookup_order(action.get("order_id"))
+        if not order or not order.get("parcels"):
+            return Verdict.escalate("không tìm thấy đơn hàng hoặc kiện hàng trong DB")
+        parcel = H.ticket_parcel(order, ctx.ticket, ctx.as_of)
+        delay = H.db_delay_days(parcel, ctx.as_of)
+        if tool == "issue_refund":
+            return _guard_issue_refund(ctx, action, pol, order, parcel, delay)
+        return _guard_file_carrier_fault(ctx, action, pol, order, parcel, delay)
+
     return Verdict.allow()
